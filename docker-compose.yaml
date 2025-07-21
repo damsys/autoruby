@@ -10,5 +10,6 @@ services:
     entrypoint:
       - uv
       - run
+      - --no-dev
       - python
       - autoruby.py

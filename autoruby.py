@@ -1,6 +1,13 @@
-import sys
 import csv
+import logging
+import sys
+
 from janome.tokenizer import Tokenizer
+
+
+logging.basicConfig(level=logging.WARN, format="%(asctime)s %(levelname)s: %(message)s")
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
 # コマンドライン引数の取得
 if len(sys.argv) != 5:
@@ -33,7 +40,10 @@ def katakana_to_hiragana(text):
     for char in text:
         code = ord(char)
         # カタカナ（全角）の範囲: U+30A1〜U+30F6 → ひらがな U+3041〜U+3096
-        if 0x30A1 <= code <= 0x30F6:
+        # ただし、 「ヶ」だけは例外的な対応として「が」に変換する。
+        if code == 0x30F6:
+            result.append("が")
+        elif 0x30A1 <= code <= 0x30F6:
             result.append(chr(code - 0x60))
         else:
             result.append(char)
@@ -84,4 +94,10 @@ for row in rows[1:]:
 # CSV 書き込み
 with open(output_csv, "w", encoding="cp932", newline="") as f:
     writer = csv.writer(f)
-    writer.writerows(new_rows)
+    for row in new_rows:
+        try:
+            writer.writerow(row)
+        except Exception:
+            logger.error("Error writing CSV: %s", row)
+            raise
+ 
