@@ -6,8 +6,16 @@ CSV ファイルの全レコードについて、指定のカラムのふりが�
 
 ## 使い方
 
+uv をインストール済みの環境:
+
 ```
 uv run python autoruby.py SOURCE.csv OUTPUT.csv 名前 ふりがな
+```
+
+docker を使う場合:
+
+```
+docker compose run --rm autoruby SOURCE.csv OUTPUT.csv 名前 ふりがな
 ```
 
 以下を引数に取ります:
